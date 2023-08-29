@@ -11,11 +11,17 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
       id: {
-        type: DataTypes.INTEGER,
+        // type: DataTypes.INTEGER,
         // allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
+        // autoIncrement: true,
+        // primaryKey: true,
         // defaultValue: 265,
+
+        type: DataTypes.UUID,
+        allowNull: false,
+        primaryKey: true,
+        unique: true,
+        defaultValue: DataTypes.UUIDV4,
       },
       image: {
         type: DataTypes.STRING,

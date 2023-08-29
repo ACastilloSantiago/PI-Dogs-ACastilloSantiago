@@ -5,8 +5,6 @@ require("dotenv").config();
 const { API_KEY } = process.env;
 
 module.exports = async () => {
-  //   const dogs = [];
-  let c = 1;
   const { data } = await axios.get(`${URL}?api_key=${API_KEY}`);
   data.forEach((dog) => {
     // console.log(dog.temperament.split(", "));

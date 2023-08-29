@@ -1,5 +1,6 @@
 const { Dogs } = require("../db");
 module.exports = async (name, image, height, weight, life_span) => {
+  console.log("s");
   if (name && image && height && weight && life_span) {
     const created = await Dogs.create({
       name,
