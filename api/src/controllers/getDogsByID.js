@@ -2,7 +2,7 @@ const axios = require("axios");
 const URL = "https://api.thedogapi.com/v1/breeds";
 require("dotenv").config();
 const { API_KEY } = process.env;
-const { Dogs } = require("../db");
+const { Dogs, Temperaments } = require("../db");
 const getDogs = require("../controllers/getDogs");
 
 module.exports = async (id) => {
@@ -21,12 +21,41 @@ module.exports = async (id) => {
   // }
   // return { error: "Not found" };
 
-  console.log(+id);
+  console.log(id);
   const dogs = await getDogs();
-  const dog = dogs.find((dog) => dog.id.toString() === id);
+
+  const dog = isNaN(id)
+    ? await Dogs.findByPk(id, {
+        include: [
+          {
+            model: Temperaments,
+          },
+        ],
+      })
+    : dogs.find((dog) => dog.id.toString() === id);
   if (dog) {
     return dog;
   }
 
   return { error: "Not found" };
 };
+// if (dog) {
+//   if (dog.created) {
+//     return dog;
+//   }
+//   return Dogs.findByPk(id, {
+//     include: {
+//       model: Temperaments,
+//       attributes: ["name"],
+//     },
+//   });
+// }
+
+//***** */
+
+// , {
+//         include: {
+//           model: Temperaments,
+//           attributes: ["name"],
+//         },
+//       }

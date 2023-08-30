@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
     // if (!dogs) {
     //   throw Error("dogs.error");
     // }
-    res.status(200).json(dogs);
+    res.status(202).json(dogs);
   } catch (error) {
     res.status(404).json("ripio coñaso");
   }

@@ -12,18 +12,20 @@ module.exports = async (raza) => {
   const razasDB = await Dogs.findAll({
     where: { name: { [Op.iLike]: `%${raza}%` } },
   });
-  console.log(razasDB);
   const razas = (await axios.get(`${URL}/search?q=${raza}&api_key=${API_KEY}`))
     .data;
+  console.log(razas);
+  console.log(razasDB);
+
   // console.log(razas);
   if (razasDB.length && razas.length) {
-    return { Api: razas, DataBase: razasDB };
+    return [...razas, ...razasDB];
   }
   if (razasDB.length) {
-    return { Api: "Not found", DataBase: razasDB };
+    return razasDB;
   }
   if (razas.length) {
-    return { Api: razas, DataBase: "Not found" };
+    return razas;
   }
 
   return { error: "No existe la raza que esta indicando" };

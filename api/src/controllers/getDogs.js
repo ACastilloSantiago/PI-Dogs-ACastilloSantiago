@@ -19,6 +19,7 @@ module.exports = async () => {
         height: dog.height,
         weight: dog.weight,
         image: dog.image,
+        created: false,
       };
     }
   );
