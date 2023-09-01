@@ -1,0 +1,12 @@
+.home {
+  background-color: rgb(151, 10, 10);
+
+  width: 100vw;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}

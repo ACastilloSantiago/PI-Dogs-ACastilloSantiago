@@ -1,0 +1,7 @@
+.mainContenedor {
+  border: 1px solid black;
+  border-radius: 1rem;
+  padding: 1rem;
+  text-align: center;
+  background-color: red;
+}

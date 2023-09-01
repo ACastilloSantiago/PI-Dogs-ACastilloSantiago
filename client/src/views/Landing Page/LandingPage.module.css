@@ -1,0 +1,23 @@
+.main {
+  /* background-color: aqua; */
+  color: red;
+}
+.landing {
+  background-color: black;
+  width: 100vw;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  color: red;
+}
+.button {
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  color: blue;
+  border: 1px solid red;
+}
