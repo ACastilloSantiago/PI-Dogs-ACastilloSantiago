@@ -1,5 +1,14 @@
 .mainContenedor {
-  border: 1px solid rgb(206, 209, 6);
+  border: 1px solid rgb(8, 4, 255);
   padding-left: 1rem;
   padding-right: 1rem;
+  text-align: center;
+  background-color: aliceblue;
+  /* padding-bottom: 1rem; */
+  /* margin-bottom: 2rem; */
+  margin: 2rem;
+}
+.image {
+  width: 28rem;
+  height: 16rem;
 }

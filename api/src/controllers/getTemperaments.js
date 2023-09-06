@@ -1,4 +1,4 @@
-const { Temperaments } = require("../db");
+const { Temperament } = require("../db");
 const axios = require("axios");
 const URL = "https://api.thedogapi.com/v1/breeds";
 require("dotenv").config();
@@ -11,7 +11,7 @@ module.exports = async () => {
     // console.log([dog.temperament], c++);
     if (dog.temperament) {
       dog.temperament.split(",").forEach(async (temp) => {
-        await Temperaments.findOrCreate({ where: { name: temp.trim() } });
+        await Temperament.findOrCreate({ where: { name: temp.trim() } });
         //   console.log(temp.join(" "));
       });
     }
@@ -19,7 +19,7 @@ module.exports = async () => {
     // await Temperaments.create({ name: dog.temperament });
     // console.log(dog.temperament);
   });
-  const tempera = await Temperaments.findAll();
+  const tempera = await Temperament.findAll();
   //   console.log(tempera);
   if (tempera) {
     return tempera;

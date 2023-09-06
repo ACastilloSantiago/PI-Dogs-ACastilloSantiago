@@ -1,5 +1,6 @@
 import Card from "../Card/Card";
 import style from "./CardContainer.module.css";
+import { useEffect } from "react";
 const CardContainer = () => {
   const Dogs = [
     {
@@ -3702,16 +3703,18 @@ const CardContainer = () => {
   return (
     <div className={style.mainContainer}>
       <h1>Contenedor de Cards =</h1>
+
       {Dogs.map((dog) => {
         if (dog.id <= 8) {
           return (
-            <div>
+            <div key={dog.id}>
               <Card
                 name={dog.name}
                 life_span={dog.life_span}
                 weight={dog.weight.metric}
                 temperament={dog.temperament}
                 id={dog?.id}
+                image={dog?.image?.url}
               />
             </div>
           );

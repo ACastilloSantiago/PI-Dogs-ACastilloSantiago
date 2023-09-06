@@ -1,4 +1,4 @@
-const { Dogs, Temperaments } = require("../db");
+const { Dogs, Temperament } = require("../db");
 module.exports = async (name, image, height, weight, life_span, temps) => {
   console.log("s");
   if (name && image && height && weight && life_span && temps) {
@@ -12,17 +12,17 @@ module.exports = async (name, image, height, weight, life_span, temps) => {
     console.log(created);
     const asociar = [];
     temps.split(",").forEach(async (temperamento) => {
-      const findTemp = await Temperaments.findOne({
+      const findTemp = await Temperament.findOne({
         where: { name: temperamento.trim() },
       });
       console.log(findTemp);
       if (findTemp) {
         asociar.push(findTemp);
-        await created.addTemperaments(findTemp);
+        await created.addTemperament(findTemp);
       }
     });
     console.log(asociar);
     // created;
-    return { ...created.dataValues, temperament: temps };
+    return { ...created.dataValues, temperaments: temps };
   } else return { error: "Faltan datos" };
 };
