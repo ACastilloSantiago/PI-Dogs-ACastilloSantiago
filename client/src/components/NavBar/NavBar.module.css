@@ -1,0 +1,10 @@
+.mainContainer {
+  border: 5px solid black;
+  /* width: 15rem; */
+  height: 15rem;
+}
+.link {
+  color: #000000;
+  text-decoration: none;
+  font-size: 1.5rem;
+}

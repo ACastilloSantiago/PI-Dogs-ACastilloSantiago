@@ -69,7 +69,8 @@ module.exports = async (id) => {
         created: dog.created,
       };
     });
-    return dogDb;
+    console.log(dogDb);
+    return dogDb[0];
   }
   if (dog) {
     return dog;

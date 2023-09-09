@@ -19,9 +19,10 @@
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const server = require("./src/app.js");
 const { conn } = require("./src/db.js");
-
+const getTemperaments = require("./src/controllers/getTemperaments.js");
 conn.sync({ force: true }).then(() => {
   server.listen(3001, () => {
+    getTemperaments();
     console.log("%s listening at 3001"); // eslint-disable-line no-console
   });
 });

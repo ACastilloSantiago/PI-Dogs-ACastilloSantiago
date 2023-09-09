@@ -11,6 +11,7 @@ module.exports = async () => {
     // console.log([dog.temperament], c++);
     if (dog.temperament) {
       dog.temperament.split(",").forEach(async (temp) => {
+        // console.log(temp, 234, temp.trim());
         await Temperament.findOrCreate({ where: { name: temp.trim() } });
         //   console.log(temp.join(" "));
       });
@@ -20,7 +21,7 @@ module.exports = async () => {
     // console.log(dog.temperament);
   });
   const tempera = await Temperament.findAll();
-  //   console.log(tempera);
+  // console.log(tempera);
   if (tempera) {
     return tempera;
   }

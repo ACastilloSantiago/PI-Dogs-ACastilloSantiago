@@ -5,3 +5,7 @@
   text-align: center;
   background-color: red;
 }
+.selected {
+  width: 400px;
+  height: 150px;
+}

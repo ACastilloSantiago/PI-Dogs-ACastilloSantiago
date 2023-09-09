@@ -35,7 +35,7 @@ module.exports = async (raza) => {
   // console.log(await razasDB.getTempertaments());
   // const dog= await
   // console.log(razas);
-
+  console.log(razas);
   console.log(123, razasDB.dataValues);
   console.log(456, razasDB);
   // console.log(razas);

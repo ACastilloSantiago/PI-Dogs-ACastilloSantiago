@@ -21,5 +21,5 @@ router.get("/temperaments", getTemperamentsHandler);
 router.get("/dogs", getDogsHandler);
 router.get("/dogs/name", getRazaHandler);
 router.post("/dogs", postDogHandler);
-router.get("/dogs/:idRaza", getDogsByIdHandler);
+router.get("/dogs/:id", getDogsByIdHandler);
 module.exports = router;
