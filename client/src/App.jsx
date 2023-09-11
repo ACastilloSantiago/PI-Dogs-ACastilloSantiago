@@ -1,5 +1,5 @@
-// import "./App.css";
-// import style from "./App.module.css";
+import "./App.css";
+import style from "./App.module.css";
 import LandingPage from "./views/Landing Page/LandingPage";
 import DetailPage from "./views/Detail Page/DetailPage";
 import HomePage from "./views/Home Page/HomePage";
@@ -21,7 +21,7 @@ function App() {
   }, [dispatch]); // se pone el dispatch en el array de depencia porque puede pasar que cargue de mala manera
 
   return (
-    <div>
+    <div className={style.je}>
       {location !== "/" && <NavBar />}
       {/* <h1>Henry Dogs</h1> */}
       <Routes>

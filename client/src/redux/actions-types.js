@@ -6,3 +6,4 @@ export const GET_TEMPERAMENTS = "GET_TEMPERAMENTS";
 export const FILTER = "FILTER";
 export const ORDER = "ORDER";
 export const RESET = "RESET";
+export const TEMPFILTER = "TEMPFILTER";

@@ -1,4 +1,4 @@
-.landing {
+/* .landing {
   background-color: black;
   width: 100vw;
   height: 100vh;
@@ -42,4 +42,11 @@
   flex-direction: column;
   align-items: center;
   overflow-x: hidden;
+} */
+.je {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }

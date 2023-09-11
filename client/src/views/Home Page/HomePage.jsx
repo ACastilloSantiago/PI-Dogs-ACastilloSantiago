@@ -8,10 +8,10 @@ import { getTemperaments } from "../../redux/actions";
 // import { getDogsByRaza } from "../../redux/actions";
 import NavBar from "../../components/NavBar/NavBar";
 const HomePage = () => {
+  const dispatch = useDispatch();
   // useEffect(() => {
-  //   console.log("MONTE HOME");
-  // }, [dogs]);
-  // console.log("dogs HOme", dogs);
+  //   dispatch(getDogs());
+  // }, []);
 
   return (
     <div className={style.home}>

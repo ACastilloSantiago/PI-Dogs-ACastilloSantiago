@@ -34,7 +34,6 @@ module.exports = async () => {
   console.log(dogsDB);
 
   const allDogs = [
-    ...dogsApi,
     ...dogsDB.map((dog) => {
       return {
         name: dog.name,
@@ -52,6 +51,7 @@ module.exports = async () => {
         created: dog.created,
       };
     }),
+    ...dogsApi,
   ];
   // const allDogs = [{ Api: dogsApi, DataBase: dogsDB }];
 

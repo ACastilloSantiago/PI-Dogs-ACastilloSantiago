@@ -7,6 +7,7 @@ import {
   FILTER,
   ORDER,
   RESET,
+  TEMPFILTER,
 } from "./actions-types";
 /// Un estado con TODOS LOS PERROS PARA LOS FILTROS=> TIENE QUE TENER LOS BUSCADOS POR RAZA Y LOS DE LA RUTA GET =>  ALLDOGS
 //                                                  DOGS_SHOW
@@ -18,10 +19,63 @@ let initialState = {
   temps: [],
 };
 const reducer = (state = initialState, action) => {
+  // console.log(action.payload);
   switch (action.type) {
     // Presentaciones
+    case TEMPFILTER:
+      if (typeof action.payload === "string") {
+        // console.log("entre en crear");
+        return {
+          ...state,
+          dogs_Show: [...state.dogs_Show].filter((dog) => {
+            // console.log(dog.temperaments);
+            if (dog.temperaments) {
+              if (dog.temperaments.includes(action.payload)) return dog;
+              return;
+            }
+            return;
+          }),
+        };
+      } else {
+        // caso de array en payload
+        console.log("entre en borrar");
+        let delet = [...state.allDogs];
+        for (const temp of action.payload) {
+          console.log("temperamento de broorar", temp, delet);
+          delet = delet.filter((dog) => {
+            // console.log(dog.temperaments);
+            if (dog.temperaments) {
+              if (dog.temperaments.includes(temp.trim())) return dog;
+              return;
+            }
+          });
+          console.log("temperamento borradp", temp, delet);
+        }
+        console.log("dogShow terminado", delet);
+        return {
+          ...state,
+          dogs_Show: [...delet],
+        };
+      }
+    //  !action.payload.length
+    //       ? [...state.allDogs]
+    //       :
+    //todo return {
+    //   ...state,
+    //   dogs_Show: [...state.dogs_Show].filter((dog) => {
+    //     console.log(dog.temperaments);
+    //     if (dog.temperaments) {
+    //       if (dog.temperaments.includes(action.payload)) return dog;
+    //       return;
+    //     }
+    //     return;
+    //   }),
+    // };
     case RESET:
-      return { ...state, dogs_Show: [...state.allDogs] };
+      return {
+        ...state,
+        dogs_Show: [...state.allDogs],
+      };
     case FILTER:
       switch (action.payload) {
         case "BaseF": {
@@ -151,7 +205,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         allDogs: [...state.allDogs, ...action.payload],
-        presentation: [...state.allDogs, ...action.payload],
+        // dogs_Show: [...state.allDogs, ...action.payload],
       };
     default:
       return { ...state };

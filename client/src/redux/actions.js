@@ -7,6 +7,7 @@ import {
   FILTER,
   ORDER,
   RESET,
+  TEMPFILTER,
 } from "./actions-types";
 import axios from "axios";
 
@@ -15,6 +16,14 @@ export const reset = () => {
   console.log("reset");
   return {
     type: RESET,
+  };
+};
+
+export const tempFilter = (value) => {
+  console.log("tempfilter", value);
+  return {
+    type: TEMPFILTER,
+    payload: value,
   };
 };
 export const filter = (value) => {
@@ -97,9 +106,10 @@ export const postDog = (dog) => {
     try {
       const endpoint = `http://localhost:3001/dogs`;
       const { data } = await axios.post(endpoint, dog);
+      console.log([data]);
       return dispatch({
         type: POST_DOG,
-        payload: data,
+        payload: [data],
       });
     } catch (error) {
       console.log(error.message);

@@ -16,11 +16,17 @@ const SearchBar = () => {
   console.log(raza);
   return (
     <div className={style.mainContenedor}>
-      <h1>SearchBar</h1>
-      <input type="search" value={raza} onChange={handlerInput} />
+      {/* <h1>SearchBar</h1> */}
+      <input
+        type="search"
+        value={raza}
+        onChange={handlerInput}
+        className={style.input}
+      />
       <button
         onClick={() => {
           Search(raza);
+          setRaza("");
         }}
       >
         Search
