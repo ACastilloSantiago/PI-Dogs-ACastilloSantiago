@@ -1,13 +1,15 @@
 .home {
   /* background-color: rgb(151, 10, 10); */
-  background-image: url("https://previews.123rf.com/images/kraft2727/kraft27271808/kraft2727180800004/106845955-fondo-con-estampados-caninos-ilustraci%C3%B3n-de-arte-vectorial.jpg");
+  background-color: #839d9a;
+
   width: 100vw;
-  height: 100vh;
+  height: 92vh;
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   overflow-x: hidden;
   /* justify-content: center; */
 }

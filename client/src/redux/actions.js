@@ -8,34 +8,30 @@ import {
   ORDER,
   RESET,
   TEMPFILTER,
+  ERROR,
 } from "./actions-types";
 import axios from "axios";
-
+// const
 //
 export const reset = () => {
-  console.log("reset");
   return {
     type: RESET,
   };
 };
 
 export const tempFilter = (value) => {
-  console.log("tempfilter", value);
   return {
     type: TEMPFILTER,
     payload: value,
   };
 };
 export const filter = (value) => {
-  console.log("filter", value);
   return {
     type: FILTER,
     payload: value,
   };
 };
 export const order = (value) => {
-  console.log("order", value);
-
   return {
     type: ORDER,
     payload: value,
@@ -46,13 +42,19 @@ export const order = (value) => {
 export const getDogById = (id) => {
   return async (dispatch) => {
     try {
+      if (id === "") {
+        return dispatch({
+          type: GET_DOGBYID,
+          payload: "",
+        });
+      }
       const { data } = await axios(`http://localhost:3001/dogs/${id}`);
       return dispatch({
         type: GET_DOGBYID,
         payload: data,
       });
     } catch (error) {
-      console.log(error.message);
+      // console.log(error.message);
     }
   };
 };
@@ -67,7 +69,11 @@ export const getDogsByRaza = (raza) => {
         payload: data,
       });
     } catch (error) {
-      console.log(error.message);
+      // console.log(error.request.response);
+      return dispatch({
+        type: ERROR,
+        payload: "wdasd",
+      });
     }
   };
 };
@@ -81,7 +87,11 @@ export const getDogs = () => {
         payload: data,
       });
     } catch (error) {
-      console.log(error.message);
+      dispatch({
+        type: ERROR,
+        payload: error.message,
+      });
+      // console.log(error.message);
     }
   };
 };
@@ -97,7 +107,10 @@ export const getTemperaments = () => {
         payload: data,
       });
     } catch (error) {
-      console.log(error.message);
+      dispatch({
+        type: ERROR,
+        payload: error.message,
+      });
     }
   };
 };
@@ -106,13 +119,28 @@ export const postDog = (dog) => {
     try {
       const endpoint = `http://localhost:3001/dogs`;
       const { data } = await axios.post(endpoint, dog);
-      console.log([data]);
+      // console.log([data]);
       return dispatch({
         type: POST_DOG,
         payload: [data],
       });
     } catch (error) {
-      console.log(error.message);
+      if (error.request.response === "Validation error") {
+        return dispatch({
+          type: ERROR,
+          payload: "Esta raza ya existe!",
+        });
+      }
+      // console.log(error.request.response);
+      // return error.request.response;
+
+      // console.log(error.message);
     }
+  };
+};
+export const cleanError = () => {
+  return {
+    type: ERROR,
+    payload: "",
   };
 };

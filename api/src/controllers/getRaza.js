@@ -3,7 +3,7 @@ const URL = "https://api.thedogapi.com/v1/breeds";
 require("dotenv").config();
 const { API_KEY } = process.env;
 const { Dogs, Temperament } = require("../db");
-// const getDogs = require("../controllers/getDogs");
+
 const { Op } = require("sequelize");
 // ME QUEDE CON VER SI LEE BIEN LA RAZA Y SE FIJA EN LA BASE DE DATOS JEJE. TERMINE VIENDO TEMA DE OPERADORES, CAPAS ES MAS FACIL ASI KJEJE
 
@@ -28,17 +28,10 @@ module.exports = async (raza) => {
       life_span: dog.life_span,
       height: dog.height.metric,
       weight: dog.weight.metric,
-      image: dog.image.url,
+      image: dog.image?.url,
       created: false,
     };
   });
-  // console.log(await razasDB.getTempertaments());
-  // const dog= await
-  // console.log(razas);
-  console.log(razas);
-  console.log(123, razasDB.dataValues);
-  console.log(456, razasDB);
-  // console.log(razas);
 
   if (razasDB.length && razas.length) {
     return [

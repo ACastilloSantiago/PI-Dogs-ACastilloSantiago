@@ -16,18 +16,18 @@ const NavBar = () => {
         />
       </Link>
       {!location.includes("/home") && (
-        <Link to="/home" className={style.link}>
-          HOME
+        <Link to="/home" className={style.img}>
+          <img className={style.img} src="../../../public/home.png" alt="" />
         </Link>
       )}
-      <div className={style.SearchBar}>
-        {!location.includes("/detail") && !location.includes("/creator") && (
-          <SearchBar />
-        )}
-      </div>
+
+      {!location.includes("/detail") && !location.includes("/creator") && (
+        <SearchBar />
+      )}
+
       {!location.includes("/creator") && (
         <Link to="/creator">
-          <img className={style.img} src="../../../public/new.png" alt="" />
+          <img className={style.img} src="../../../public/23.png" alt="" />
         </Link>
       )}
     </div>

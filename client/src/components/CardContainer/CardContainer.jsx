@@ -1,5 +1,4 @@
 import Card from "../Card/Card";
-import FirstCards from "../FirstCards/FirsCards";
 import style from "./CardContainer.module.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -8,177 +7,217 @@ import { useEffect, useState } from "react";
 import Loading from "../Loading/Loading";
 const CardContainer = () => {
   const dispatch = useDispatch();
+  //!ESTADOS
   const temps = useSelector((state) => state.temps);
   const dogs = useSelector((state) => state.dogs_Show);
-
-  // console.log("temps", temps);
-
-  // console.log("Perros", dogs);
-  const [aver, setAver] = useState(false);
-  // const [temp, setTemp] = useState("");
+  const [notFoundDataBase, setNotFoundDataBase] = useState(false);
+  const [cleanFilterTemps, setCleanFilterTemps] = useState(false);
+  const [temperamentsSelecteds, setTemperamentsSelectedsFilter] = useState([]);
   // !PAGINADO
-  const DOGS_FOR_PAGE = 8;
-  const [dogsP, setDogsP] = useState([...dogs].splice(0, DOGS_FOR_PAGE));
-
-  useEffect(() => {
-    setDogsP([...dogs].splice(0, DOGS_FOR_PAGE));
-  }, [dogs]);
-  // console.log(dogs, dogsP);
   const [currentPage, setCurrentPage] = useState(0);
+  const DOGS_FOR_PAGE = 8;
+  const [dogsPaginado, setDogsPaginado] = useState(
+    [...dogs].splice(0, DOGS_FOR_PAGE)
+  );
   const nextHandler = () => {
     const dogsIndex = dogs.length;
     const nextPage = currentPage + 1;
     const firstIndex = nextPage * DOGS_FOR_PAGE;
     if (firstIndex >= dogsIndex) return;
-    setDogsP([...dogs].splice(firstIndex, DOGS_FOR_PAGE));
+    setDogsPaginado([...dogs].splice(firstIndex, DOGS_FOR_PAGE));
     setCurrentPage(nextPage);
   };
   const prevHandler = () => {
     const prevPage = currentPage - 1;
     if (prevPage < 0) return;
     const firstIndex = prevPage * DOGS_FOR_PAGE;
-    setDogsP([...dogs].splice(firstIndex, DOGS_FOR_PAGE));
+    setDogsPaginado([...dogs].splice(firstIndex, DOGS_FOR_PAGE));
     setCurrentPage(prevPage);
   };
 
+  useEffect(() => {
+    setDogsPaginado([...dogs].splice(0, DOGS_FOR_PAGE));
+  }, [dogs]);
+  // console.log(dogs, dogsPaginado);
+  //! HANDLERS
   const handlerOrder = (event) => {
     dispatch(order(event.target.value));
     setCurrentPage(0);
-    setAver(false);
-
-    // setAux(!aux);
+    setCleanFilterTemps(false);
   };
-  const [database, setDatabase] = useState(false);
   const handlerFilter = (event) => {
     // console.log("sera?", event.target.value);
     dispatch(filter(event.target.value));
     setCurrentPage(0);
-    setAver(false);
+    setCleanFilterTemps(false);
     if (event.target.value === "DataBase") {
-      setDatabase(!database);
+      setNotFoundDataBase(true);
     }
   };
-  // let temp = "";
-  const [temp, setTemp] = useState([]);
   const handlerTempFilter = (event) => {
-    setTemp([...new Set([...temp, ` ${event.target.value}`])]);
+    if (event.target.value) {
+      setTemperamentsSelectedsFilter([
+        ...new Set([...temperamentsSelecteds, ` ${event.target.value}`]),
+      ]);
 
-    // setTemp([...temp, `${event.target.value}, `].join(""));
-    console.log("test", [...new Set([...temp, ` ${event.target.value}`])]);
-    dispatch(tempFilter(event.target.value));
-    setCurrentPage(0);
-    setAver(false);
+      // setFilterFilter([...Filter, `${event.target.value}, `].join(""));
+      // console.log("test", [...new Set([...Filter, ` ${event.target.value}`])]);
+      dispatch(tempFilter(event.target.value));
+      setCurrentPage(0);
+      setCleanFilterTemps(false);
+      setNotFoundDataBase(true);
+    }
   };
   const handlerDelete = (event) => {
-    setTemp(temp.filter((temp) => temp !== event.target.id));
-    console.log(temp.filter((temp) => temp !== event.target.id));
-    dispatch(tempFilter(temp.filter((temp) => temp !== event.target.id)));
+    setTemperamentsSelectedsFilter(
+      temperamentsSelecteds.filter((temp) => temp !== event.target.id)
+    );
+    // console.log(temp.filter((temp) => temp !== event.target.id));
+    dispatch(
+      tempFilter(
+        temperamentsSelecteds.filter((temp) => temp !== event.target.id)
+      )
+    );
+    setCleanFilterTemps(true);
   };
   const handlerReset = () => {
     setCurrentPage(0);
     dispatch(reset());
-    setAver(true);
+    setCleanFilterTemps(true);
     dispatch(tempFilter(""));
-    setTemp("");
+    setTemperamentsSelectedsFilter([]);
+    setNotFoundDataBase(false);
   };
   //!
-  // console.log("base de datos", dogsP);
-  if (!dogsP.length) {
+  // if (!dogs.length) {
+  //   setDatabase(true);
+  // }
+
+  if (!dogsPaginado.length) {
     // console.log("database if", database);
-    if (database) {
+    if (notFoundDataBase) {
       return (
-        <div>
-          <img src="https://httpstatusdogs.com/img/404.jpg" alt="" />;
-          <button onClick={handlerReset}>reset</button>
+        <div className={style.notFoundDataBase}>
+          <h1>No hay perros disponibles!</h1>
+          <img
+            src="https://golfwithoutlimits.com/images_home/404_page_not_found_dog.jpg"
+            alt=""
+          />
+          <button onClick={handlerReset} className={style.slide_diagonal}>
+            Back
+          </button>
+          <br />
+          {/* {alert("No hay perros!")} */}
         </div>
       );
     } else {
       return (
         <div>
+          {/* <button onClick={handlerReset} className={style.slide_diagonal}>
+            Reset
+          </button> */}
           <Loading />
-          <button onClick={handlerReset}>reset</button>
         </div>
       );
     }
   } else {
-    // console.log("cargue");
     return (
       <div className={style.mainContainer}>
-        <div className={style.imgCardC}>
-          <img src="../../../public/5.png" alt="" />
-        </div>
-
-        <div className={style.mainFiltros}>
-          <h2>Filtros</h2>
-          {/* <br /> */}
-          <h2>Ordenamientos</h2>
-        </div>
         <div className={style.filtro}>
-          <h5>Origen</h5>
-
-          <select name="Filtrado" onChange={handlerFilter}>
-            <option value="" className={style} selected={aver}>
-              Filtrado
+          <div>
+            {/* <h5>Origen</h5> */}
+            <label>Ordenamiento/Filtrado </label>
+            {/* <select name="Filtrado" onChange={handlerFilter}>
+            <option value="" className={style} 
+              Origen
             </option>
-            <option value="Api">Api</option>
-            <option value="DataBase">Base de datos</option>
-          </select>
-          <h5>Temperamentos</h5>
+            </select> */}
 
-          <select
-            name="Filtrado De Temperamentos"
-            onChange={handlerTempFilter}
-            // multiple
-          >
-            <option value="" className={style} selected={aver}>
-              Filtrado de Temperamentos
-            </option>
-            {/* <optgroup label="Temperamentos"> */}
-            {temps.map((temp, index) => {
-              // console.log(temp);
-              return (
-                <option value={temp.name} key={index}>
-                  {temp.name}
-                </option>
-              );
-            })}
-            {/* </optgroup> */}
-          </select>
-          {temp.length &&
-            temp.map((temp, index) => {
-              console.log("prueba", temp);
-              return (
-                <div key={index}>
-                  <span>{temp}</span>
-                  <button type="button" id={temp} onClick={handlerDelete}>
-                    x
-                  </button>
-                </div>
-              );
-            })}
-        </div>
-        <div>
-          <select name="Ordenamiento" onChange={handlerOrder}>
-            <option value="" className={style} selected={aver}>
-              Ordenamiento
-            </option>
-            <optgroup label="Raza">
-              <option value="RazaA">Ascendente</option>
-              <option value="RazaB">Descendente</option>
-            </optgroup>
-            <optgroup label="Peso">
-              <option value="PesoA">Ascendente</option>
-              <option value="PesoB">Descendente</option>
-            </optgroup>
-          </select>
-        </div>
-        <div>
-          <button onClick={handlerReset}>reset</button>
-        </div>
-        {/* <br /> */}
+            <button
+              onClick={handlerOrder}
+              value="RazaA"
+              className={style.slide_diagonal}
+            >
+              Raza Asc.
+            </button>
+            <button
+              onClick={handlerOrder}
+              value="RazaB"
+              className={style.slide_diagonal}
+            >
+              Raza Des.
+            </button>
+            <button
+              onClick={handlerOrder}
+              value="PesoB"
+              className={style.slide_diagonal}
+            >
+              Peso Des.
+            </button>
+            <button
+              onClick={handlerOrder}
+              value="PesoA"
+              className={style.slide_diagonal}
+            >
+              Peso Asc.
+            </button>
+            <button
+              onClick={handlerFilter}
+              value="Api"
+              className={style.slide_diagonal}
+            >
+              Api
+            </button>
+            {/* <br /> */}
+            <button
+              onClick={handlerFilter}
+              value="DataBase"
+              className={style.slide_diagonal}
+            >
+              Base de datos
+            </button>
 
+            <select
+              className={style.slide_diagonal}
+              name="Filtrado De Temperamentos"
+              onChange={handlerTempFilter}
+              // multiple
+            >
+              <option selected={cleanFilterTemps}>
+                Filtrado de Temperamentos
+              </option>
+              {/* <optgroup label="Temperamentos"> */}
+              {temps.map((temp, index) => {
+                // console.log(temp);
+                return (
+                  <option value={temp.name} key={index}>
+                    {temp.name}
+                  </option>
+                );
+              })}
+              {/* </optgroup> */}
+            </select>
+            <div className={style.tempContainer}>
+              {temperamentsSelecteds &&
+                temperamentsSelecteds.map((temp, index) => {
+                  // console.log("prueba", temp);
+                  return (
+                    <div key={index} className={style.tempSelected}>
+                      <span>{temp}</span>
+                      <button type="button" id={temp} onClick={handlerDelete}>
+                        x
+                      </button>
+                    </div>
+                  );
+                })}
+            </div>
+            <button onClick={handlerReset} className={style.slide_diagonal}>
+              Reset
+            </button>
+          </div>
+        </div>
         <div className={style.Cards}>
-          {dogsP?.map((dog) => {
+          {dogsPaginado.map((dog) => {
             // console.log("holas", dog);
             return (
               <div key={dog.id}>
@@ -195,9 +234,13 @@ const CardContainer = () => {
           })}
         </div>
         <div className={style.paginado}>
-          <button onClick={prevHandler}> Prev </button>
+          <button onClick={prevHandler} className={style.slide_diagonal}>
+            Prev
+          </button>
           <p>{currentPage}</p>
-          <button onClick={nextHandler}>Next</button>
+          <button onClick={nextHandler} className={style.slide_diagonal}>
+            Next
+          </button>
         </div>
       </div>
     );

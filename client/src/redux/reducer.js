@@ -8,6 +8,7 @@ import {
   ORDER,
   RESET,
   TEMPFILTER,
+  ERROR,
 } from "./actions-types";
 /// Un estado con TODOS LOS PERROS PARA LOS FILTROS=> TIENE QUE TENER LOS BUSCADOS POR RAZA Y LOS DE LA RUTA GET =>  ALLDOGS
 //                                                  DOGS_SHOW
@@ -17,21 +18,24 @@ let initialState = {
   allDogs: [], // todos en general
   dogId: {},
   temps: [],
+  error: "",
 };
 const reducer = (state = initialState, action) => {
-  // console.log(action.payload);
   switch (action.type) {
     // Presentaciones
+    case ERROR:
+      console.log(action.payload);
+      return {
+        ...state,
+        error: action.payload,
+      };
     case TEMPFILTER:
       if (typeof action.payload === "string") {
-        // console.log("entre en crear");
         return {
           ...state,
           dogs_Show: [...state.dogs_Show].filter((dog) => {
-            // console.log(dog.temperaments);
             if (dog.temperaments) {
               if (dog.temperaments.includes(action.payload)) return dog;
-              return;
             }
             return;
           }),
@@ -43,7 +47,6 @@ const reducer = (state = initialState, action) => {
         for (const temp of action.payload) {
           console.log("temperamento de broorar", temp, delet);
           delet = delet.filter((dog) => {
-            // console.log(dog.temperaments);
             if (dog.temperaments) {
               if (dog.temperaments.includes(temp.trim())) return dog;
               return;
@@ -57,20 +60,7 @@ const reducer = (state = initialState, action) => {
           dogs_Show: [...delet],
         };
       }
-    //  !action.payload.length
-    //       ? [...state.allDogs]
-    //       :
-    //todo return {
-    //   ...state,
-    //   dogs_Show: [...state.dogs_Show].filter((dog) => {
-    //     console.log(dog.temperaments);
-    //     if (dog.temperaments) {
-    //       if (dog.temperaments.includes(action.payload)) return dog;
-    //       return;
-    //     }
-    //     return;
-    //   }),
-    // };
+
     case RESET:
       return {
         ...state,
@@ -112,10 +102,10 @@ const reducer = (state = initialState, action) => {
           return {
             ...state,
             dogs_Show: [...state.dogs_Show].sort((a, b) => {
-              if (a.name > b.name) {
+              if (a?.name.toLowerCase() > b?.name.toLowerCase()) {
                 return 1;
               }
-              if (a.name < b.name) {
+              if (a?.name.toLowerCase() < b?.name.toLowerCase()) {
                 return -1;
               }
 
@@ -126,10 +116,10 @@ const reducer = (state = initialState, action) => {
           return {
             ...state,
             dogs_Show: [...state.dogs_Show].sort((a, b) => {
-              if (a.name < b.name) {
+              if (a?.name.toLowerCase() < b?.name.toLowerCase()) {
                 return 1;
               }
-              if (a.name > b.name) {
+              if (a?.name.toLowerCase() > b?.name.toLowerCase()) {
                 return -1;
               }
 
@@ -141,17 +131,21 @@ const reducer = (state = initialState, action) => {
             ...state,
             dogs_Show: [...state.dogs_Show].sort((a, b) => {
               let mediaA = 0;
-              a.weight.split(" - ").forEach((num) => {
-                mediaA += Number(num);
+              a?.weight.split(" - ").forEach((num) => {
+                // console.log(num);
+                isNaN(num) ? (mediaA += 0) : (mediaA += Number(num));
               });
               let mediaB = 0;
-              b.weight.split(" - ").forEach((num) => {
-                mediaB += Number(num);
+              b?.weight.split(" - ").forEach((num) => {
+                // console.log(num);
+
+                isNaN(num) ? (mediaB += 0) : (mediaB += Number(num));
               });
-              if (mediaA > mediaB) {
+
+              if (Math.ceil(mediaA / 2) > Math.ceil(mediaB / 2)) {
                 return 1;
               }
-              if (mediaA < mediaB) {
+              if (Math.ceil(mediaA / 2) < Math.ceil(mediaB / 2)) {
                 return -1;
               }
 
@@ -163,17 +157,17 @@ const reducer = (state = initialState, action) => {
             ...state,
             dogs_Show: [...state.dogs_Show].sort((a, b) => {
               let mediaA = 0;
-              a.weight.split(" - ").forEach((num) => {
-                mediaA += Number(num);
+              a?.weight.split(" - ").forEach((num) => {
+                isNaN(num) ? (mediaA += 0) : (mediaA += Number(num));
               });
               let mediaB = 0;
-              b.weight.split(" - ").forEach((num) => {
-                mediaB += Number(num);
+              b?.weight.split(" - ").forEach((num) => {
+                isNaN(num) ? (mediaB += 0) : (mediaB += Number(num));
               });
-              if (mediaA < mediaB) {
+              if (Math.ceil(mediaA / 2) < Math.ceil(mediaB / 2)) {
                 return 1;
               }
-              if (mediaA > mediaB) {
+              if (Math.ceil(mediaA / 2) > Math.ceil(mediaB / 2)) {
                 return -1;
               }
 
@@ -196,7 +190,7 @@ const reducer = (state = initialState, action) => {
     case GET_DOGSBYRAZA:
       return {
         ...state,
-        // allDogs: [...action.payload],
+
         dogs_Show: [...action.payload],
       };
     case GET_TEMPERAMENTS:
@@ -204,8 +198,9 @@ const reducer = (state = initialState, action) => {
     case POST_DOG:
       return {
         ...state,
-        allDogs: [...state.allDogs, ...action.payload],
-        // dogs_Show: [...state.allDogs, ...action.payload],
+        allDogs: [...action.payload, ...state.allDogs],
+        dogs_Show: [...action.payload, ...state.allDogs],
+        error: "Creado con exito!",
       };
     default:
       return { ...state };

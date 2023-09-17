@@ -8,18 +8,16 @@ import { useDispatch } from "react-redux";
 const DetailPage = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  // console.log(2, id);
   useEffect(() => {
     dispatch(getDogById(id));
     return () => {
       dispatch(getDogById(""));
     };
-  }, [id]);
+  }, []);
   const dogById = useSelector((state) => state.dogId);
   console.log("Detail Page", dogById);
   return (
     <div className={style.detail}>
-      <h1>Mostrando Detail Page</h1>
       <Detail detail={dogById} />
     </div>
   );

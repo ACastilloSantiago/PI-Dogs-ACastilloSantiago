@@ -7,19 +7,17 @@ import FormPage from "./views/Form Page/FormPage";
 import { Routes, Route, useLocation } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 import { getDogs, getTemperaments } from "./redux/actions";
 
+import { useEffect } from "react";
+
 function App() {
-  const location = useLocation().pathname;
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getDogs());
     dispatch(getTemperaments());
-
-    // dispatch(getDogsByRaza(raza));
   }, [dispatch]); // se pone el dispatch en el array de depencia porque puede pasar que cargue de mala manera
-
+  const location = useLocation().pathname;
   return (
     <div className={style.je}>
       {location !== "/" && <NavBar />}

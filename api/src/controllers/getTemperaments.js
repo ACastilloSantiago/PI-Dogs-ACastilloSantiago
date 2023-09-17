@@ -7,8 +7,6 @@ const { API_KEY } = process.env;
 module.exports = async () => {
   const { data } = await axios.get(`${URL}?api_key=${API_KEY}`);
   data.forEach((dog) => {
-    // console.log(dog.temperament.split(", "));
-    // console.log([dog.temperament], c++);
     if (dog.temperament) {
       dog.temperament.split(",").forEach(async (temp) => {
         // console.log(temp, 234, temp.trim());
@@ -16,9 +14,6 @@ module.exports = async () => {
         //   console.log(temp.join(" "));
       });
     }
-
-    // await Temperaments.create({ name: dog.temperament });
-    // console.log(dog.temperament);
   });
   const tempera = await Temperament.findAll();
   // console.log(tempera);

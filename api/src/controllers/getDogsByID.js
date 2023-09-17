@@ -6,22 +6,9 @@ const { Dogs, Temperament } = require("../db");
 const getDogs = require("../controllers/getDogs");
 
 module.exports = async (id) => {
-  // const dogDB = await Dogs.findByPk(id);
-  // const dog = (await axios.get(`${URL}/${id}?api_key=${API_KEY}`)).data;
-  // console.log(dogDB);
-  // if (dog.name && dogDB) {
-  //   console.log("s");
-  //   return { Api: dog, DataBase: dogDB };
-  // }
-  // if (dog.name) {
-  //   return { Api: dog, DataBase: "Not found" };
-  // }
-  // if (dogDB) {
-  //   return { Api: "Not found", DataBase: dogDB };
-  // }
-  // return { error: "Not found" };
-
-  console.log(id);
+  if (id === "") {
+    return "";
+  }
   const dogs = await getDogs();
 
   const dog = isNaN(id)
@@ -33,16 +20,7 @@ module.exports = async (id) => {
         },
       })
     : dogs.find((dog) => dog.id.toString() === id);
-  // console.log("diferencial", dog);
-  // console.log("diferencial23", dog.dataValues);
-  // console.log("diferencial22323", dog.dataValues.temperaments);
 
-  // if (dog && isNaN(id)) {
-  //   dog.dataValues.temperaments = dog.dataValues.temperaments.map(
-  //     (temperament) => temperament.dataValues.name
-  //   );
-  //   return dog;
-  // }
   if (dog && isNaN(id)) {
     console.log(1, "entro a if");
     console.log(1, dog.dataValues, "entro a if");
@@ -77,23 +55,3 @@ module.exports = async (id) => {
   }
   return { error: "Not found" };
 };
-// if (dog) {
-//   if (dog.created) {
-//     return dog;
-//   }
-//   return Dogs.findByPk(id, {
-//     include: {
-//       model: Temperaments,
-//       attributes: ["name"],
-//     },
-//   });
-// }
-
-//***** */
-
-// , {
-//         include: {
-//           model: Temperaments,
-//           attributes: ["name"],
-//         },
-//       }

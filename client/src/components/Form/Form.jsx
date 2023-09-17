@@ -1,30 +1,49 @@
 import style from "./Form.module.css";
 import { useState } from "react";
-// import getTemperaments from "../../../../api/src/controllers/getTemperaments";
+// const validate = require("../../validation/validate");
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { postDog } from "../../redux/actions";
-// import { useDispatch } from "react-redux";
+import { cleanError, postDog } from "../../redux/actions";
+// import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 const Form = () => {
+  //!!ESTADOS
   const temps = useSelector((state) => state.temps);
-  const dispatch = useDispatch();
+  const errR = useSelector((state) => state.error);
   const [selectedTemps, setSelectedTemps] = useState([]);
-  //!!
-  const [error, setError] = useState({
-    name: "Su nombre no puede estar vacio!",
-    // ,
-    height_min: "Su altura minima no puede estar vacio!",
-    height_max: "Su altura maxima no puede estar vacio!",
-    weight_max: "Su peso maximo no puede estar vacio!",
-    weight_min: "Su peso minimo no puede estar vacio!",
-    life_span: "Su año de vida no puede estar vacio!",
-    temps: "Su tempermaneto no puede estar vacio!",
-    image: "Su URL no puede estar vacio!",
+  //? Estado que envio
+  const [dog, setDog] = useState({
+    name: "",
+    height: "",
+    weight: "",
+    life_span: "",
+    temps: "",
+    image: "",
   });
+  //? Pre estado diferenciando max y min
+  const [preDog, setPreDog] = useState({
+    height_min: "",
+    height_max: "",
+    weight_max: "",
+    weight_min: "",
+  });
+  const dispatch = useDispatch();
+  //!!
+  const history = useNavigate();
+  const [error, setError] = useState({
+    name: "Este parametro no puede estar vacio!",
+    height_min: "Este parametro no puede estar vacio!",
+    height_max: "Este parametro no puede estar vacio!",
+    weight_max: "Este parametro no puede estar vacio!",
+    weight_min: "Este parametro no puede estar vacio!",
+    life_span: "Este parametro no puede estar vacio!",
+    temps: "Este parametro no puede estar vacio!",
+    image: "Este parametro no puede estar vacio!",
+  });
+  //!!Validaciones
   const validate = (data, name) => {
-    console.log("validate", data);
-    console.log("name", name);
-    // console.log(data.name.length);
+    // console.log("validate", data);
+    // console.log("name", name);
 
     //!NAME
     if (name === "name") {
@@ -35,14 +54,13 @@ const Form = () => {
         setError({ ...error, name: "No puede ingresar numeros!" });
       }
       if (!/^\S/.test(data.name)) {
-        console.log("si", data.name);
         setError({ ...error, name: "No puede comenzar con espacios vacios!" });
       }
       if (data.name.length > 35) {
         setError({ ...error, name: "La longitud maxima es 35!" });
       }
       if (!data.name) {
-        setError({ ...error, name: "Su nombre no puede estar vacio! " });
+        setError({ ...error, name: "Este parametro no puede estar vacio! " });
       }
     }
 
@@ -51,24 +69,27 @@ const Form = () => {
       if (data.life_span) {
         setError({ ...error, [name]: "" });
       }
-      // if (!/[0-9]/.test(data.life_span)) {
-      //   setError({ ...error, [name]: "No puede ingresar letras!" });
-      // }
-      if (data.life_span.length > 8) {
+      if (!/^\d{2} - \d{2}$/.test(data.life_span)) {
+        setError({ ...error, [name]: "Siga el ejemplo => 05 - 10!" });
+      }
+      if (/[A-z]/.test(data.life_span)) {
+        setError({ ...error, [name]: "No puede ingresar letras!" });
+      }
+      if (data.life_span.length > 7) {
         setError({ ...error, [name]: "La longitud maxima es 8!" });
       }
-      if (!/^\S/.test(data.life_span)) {
+      if (!/\S/.test(data.life_span)) {
         setError({
           ...error,
-          [name]: "No puede comenzar con espacios vacios!",
+          [name]: "No puede contener espacios vacios!",
         });
       }
       if (!data.life_span) {
-        setError({ ...error, [name]: "Su año de vida no puede estar vacio!" });
+        setError({ ...error, [name]: "Este parametro no puede estar vacio!" });
       }
     }
-
-    // //!Altura Maxx
+    //!!!
+    // //!Altura Max
     if (name === "height_max") {
       if (data.height_max) {
         setError({
@@ -76,28 +97,44 @@ const Form = () => {
           [name]: "",
         });
       }
-      if (!/[0-9]/.test(data.height_max)) {
-        setError({ ...error, [name]: "No puede ingresar letras!" });
-      }
 
-      if (!/^\S/.test(data.height_max)) {
+      if (
+        data.height_max &&
+        data.height_min &&
+        +data.height_max < +data.height_min
+      ) {
         setError({
           ...error,
-          [name]: "No puede comenzar con espacios vacios!",
+          height_max: "La altura maxima no puede ser mas chica que la minima!",
+          height_min: "No puede ser mas grande que la maxima!",
+        });
+      } else {
+        setError({
+          ...error,
+          height_max: "",
+          height_min: "",
         });
       }
-      if (data.height_max.length > 4) {
-        setError({ ...error, [name]: "La longitud maxima es 4!" });
+      if (isNaN(data.height_max)) {
+        // console.log(data.height_max);
+        setError({ ...error, [name]: "No puede ingresar letras!" });
       }
-
+      if (/\s/.test(data.height_max)) {
+        setError({
+          ...error,
+          [name]: "No puede contener espacios vacios!",
+        });
+      }
+      if (data.height_max.length > 3) {
+        setError({ ...error, [name]: "La longitud maxima es 3!" });
+      }
       if (!data.height_max) {
         setError({
           ...error,
-          [name]: "Su altura maxima no pueden estar vacia!",
+          [name]: "Este parametro no puede estar vacio!",
         });
       }
     }
-
     // //!Altura Min
     if (name === "height_min") {
       if (data.height_min) {
@@ -106,55 +143,87 @@ const Form = () => {
           [name]: "",
         });
       }
-      if (!/[0-9]/.test(data.height_min)) {
-        setError({ ...error, [name]: "No puede ingresar letras!" });
-      }
-
-      if (!/^\S/.test(data.height_min)) {
+      if (
+        data.height_min &&
+        data.height_max &&
+        +data.height_max < +data.height_min
+      ) {
         setError({
           ...error,
-          [name]: "No puede comenzar con espacios vacios!",
+          height_max: "La altura maxima no puede ser mas chica que la minima!",
+          height_min: "No puede ser mas grande que la maxima!",
+        });
+      } else {
+        setError({
+          ...error,
+          height_max: "",
+          height_min: "",
         });
       }
-      if (data.height_min.length > 4) {
-        setError({ ...error, [name]: "La longitud minima es 4!" });
+      if (isNaN(data.height_min)) {
+        // console.log(data.height_min);
+        setError({ ...error, [name]: "No puede ingresar letras!" });
       }
-
+      if (/\s/.test(data.height_min)) {
+        setError({
+          ...error,
+          [name]: "No puede contener espacios vacios!",
+        });
+      }
+      if (data.height_min.length > 3) {
+        setError({ ...error, [name]: "La longitud minima es 3!" });
+      }
       if (!data.height_min) {
         setError({
           ...error,
-          [name]: "Su altura minima no pueden estar vacia!",
+          [name]: "Este parametro no puede estar vacio!",
         });
       }
     }
-
     // //!peso Maxx
     if (name === "weight_max") {
       if (data.weight_max) {
-        console.log("entre");
         setError({
           ...error,
           [name]: "",
         });
       }
-      if (!/[0-9]/.test(data.weight_max)) {
+      if (
+        data.weight_max &&
+        data.weight_min &&
+        +data.weight_max < +data.weight_min
+      ) {
+        setError({
+          ...error,
+          weight_max: "El peso maximo no puede ser mas chico que el minimo!",
+          weight_min: "No puede ser mas grande que el maximo!",
+        });
+      } else {
+        setError({
+          ...error,
+          weight_max: "",
+          weight_min: "",
+        });
+      }
+
+      if (isNaN(data.weight_max)) {
         setError({ ...error, [name]: "No puede ingresar letras!" });
       }
 
-      if (!/^\S/.test(data.weight_max)) {
+      if (/\s/.test(data.weight_max)) {
         setError({
           ...error,
-          [name]: "No puede comenzar con espacios vacios!",
+          [name]: "No puede contener espacios vacios!",
         });
       }
-      if (data.weight_max.length > 4) {
-        setError({ ...error, [name]: "La longitud maxima es 4!" });
+      if (data.weight_max.length > 3) {
+        setError({ ...error, [name]: "La longitud maxima es 3!" });
       }
 
       if (!data.weight_max) {
         setError({
           ...error,
-          [name]: "Su peso maxima no pueden estar vacia!",
+          [name]: "Este parametro no puede estar vacio!",
         });
       }
     }
@@ -168,33 +237,47 @@ const Form = () => {
           [name]: "",
         });
       }
-      if (!/[0-9]/.test(data.weight_min)) {
+      if (
+        data.weight_min &&
+        data.weight_max &&
+        +data.weight_max < +data.weight_min
+      ) {
+        setError({
+          ...error,
+          weight_max: "El peso maximo no puede ser mas chico que el minimo!",
+          weight_min: "No puede ser mas grande que el maximo!",
+        });
+      } else {
+        setError({
+          ...error,
+          weight_max: "",
+          weight_min: "",
+        });
+      }
+      if (isNaN(data.weight_min)) {
         setError({ ...error, [name]: "No puede ingresar letras!" });
       }
 
-      if (!/^\S/.test(data.weight_min)) {
+      if (/\s/.test(data.weight_min)) {
         setError({
           ...error,
-          [name]: "No puede comenzar con espacios vacios!",
+          [name]: "No puede contener espacios vacios!",
         });
       }
-      if (data.weight_min.length > 4) {
-        setError({ ...error, [name]: "La longitud minima es 4!" });
+      if (data.weight_min.length > 3) {
+        setError({ ...error, [name]: "La longitud minima es 3!" });
       }
 
       if (!data.weight_min) {
         setError({
           ...error,
-          [name]: "Su peso minima no pueden estar vacia!",
+          [name]: "Este parametro no puede estar vaci!",
         });
       }
     }
 
     // //!url
     if (name === "image") {
-      // if (data.image) {
-      //   setError({ ...error, [name]: "" });
-      // }
       if (
         /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/g.test(
           data.image
@@ -209,84 +292,57 @@ const Form = () => {
       ) {
         setError({ ...error, [name]: "No es una url admitida" });
       }
-      if (!/^\S/.test(data.image)) {
+      if (/\s/.test(data.image)) {
         setError({
           ...error,
-          [name]: "No puede comenzar con espacios vacios!",
+          [name]: "No puede contener espacios vacios!",
         });
       }
       if (!data.image) {
-        setError({ ...error, [name]: "El URL no pueden estar vacio!" });
+        setError({ ...error, [name]: "Este parametro no puede estar vacio!" });
       }
     }
     //!temps
     if (name === "temps") {
-      console.log(data);
       if (data.length) {
         setError({ ...error, temps: "" });
       }
-      // if (/[0-9]/.test(data.temps)) {
-      //   setError({ ...error, temps: "No puede ingresar numeros!" });
-      // }
-      // if (!/^\S/.test(data.temps)) {
-      //   console.log("si", data.temps);
-      //   setError({ ...error, temps: "No puede comenzar con espacios vacios!" });
-      // }
-      // if (data.temps.length > 35) {
-      //   setError({ ...error, temps: "La longitud maxima es 35!" });
-      // }
+
       if (!data.length) {
-        setError({ ...error, temps: "Su temperamento no puede estar vacio! " });
+        setError({ ...error, temps: "Este parametro no puede estar vacio!" });
       }
     }
   };
-  //!!
-  const [dog, setDog] = useState({
-    name: "",
-    height: "",
-    weight: "",
-    life_span: "",
-    temps: "",
-    image: "",
-  });
-  const [preDog, setPreDog] = useState({
-    height_min: "",
-    height_max: "",
-    weight_max: "",
-    weight_min: "",
-  });
+
+  //! HANDLRES
   const handlerDog = (event) => {
     let name = event.target.name;
     let value = event.target.value;
     setDog({ ...dog, [name]: value });
-    console.log("handler", { ...dog, [name]: value });
     validate({ ...dog, [name]: value }, name);
   };
-  console.log(error);
+
   const handlerPreDog = (event) => {
     let name = event.target.name;
     let value = event.target.value;
-    console.log(name[0]);
-    console.log(name);
-
     setPreDog({ ...preDog, [name]: value });
     validate({ ...preDog, [name]: value }, name);
-
-    // setError(validate({ ...dog, [name]: value }));
   };
   const handlerTemps = (event) => {
     setSelectedTemps([...new Set([...selectedTemps, event.target.value])]);
     validate([...new Set([...selectedTemps, event.target.value])], "temps");
-
-    console.log(selectedTemps);
-    console.log(selectedTemps.join(", "));
-    // setError(validate([...new Set([...selectedTemps, event.target.value])]));
   };
   const handlerSubmit = (event) => {
     event.preventDefault();
     const dogg = {
-      height: `${preDog.height_min}-${preDog.height_max}`,
-      weight: `${preDog.weight_min}-${preDog.weight_max}`,
+      height:
+        preDog.height_min && preDog.height_max
+          ? `${preDog.height_min} - ${preDog.height_max}`
+          : "",
+      weight:
+        preDog.weight_min && preDog.weight_max
+          ? `${preDog.weight_min} - ${preDog.weight_max}`
+          : "",
     };
     setDog({
       ...dog,
@@ -294,17 +350,25 @@ const Form = () => {
       weight: dogg.weight,
       temps: selectedTemps.join(", "),
     });
-    console.log(dog);
-    // dog && postDog(dog);
+
+    dog &&
+      dispatch(
+        postDog({
+          ...dog,
+          height: dogg.height,
+          weight: dogg.weight,
+          temps: selectedTemps.join(", "),
+        })
+      );
+    // console.log("error", errR);
+    // if (errR === "Creado con exito!") {
+    //   setTimeout(() => {
+    //     console.log("paso el segundo");
+    //   }, 1000);
+    // }
   };
-  useEffect(() => {
-    // console.log("eff", dog.temps);
-    if (dog.temps) {
-      dispatch(postDog(dog));
-    }
-  }, [dog]);
+
   const handlerDelete = (event) => {
-    console.log(event.target.id);
     setSelectedTemps(selectedTemps.filter((temp) => temp !== event.target.id));
     validate(
       selectedTemps.filter((temp) => temp !== event.target.id),
@@ -323,124 +387,142 @@ const Form = () => {
     }
     return send;
   };
+  if (errR) {
+    console.log(2, errR);
+    errR === "Creado con exito!"
+      ? setTimeout(() => {
+          // alert(errR);
+          history("/home");
+          dispatch(cleanError());
+        }, 1000)
+      : alert(errR);
+    dispatch(cleanError());
+  }
   return (
     <div className={style.mainContenedor}>
-      <h1>Form</h1>
-      <form onSubmit={handlerSubmit}>
-        <h2>Crear Dog</h2>
-        <label htmlFor="">Nombre:</label>
-        <input
-          type="text"
-          placeholder="Nombre"
-          name="name"
-          value={dog.name}
-          onChange={handlerDog}
-        />
-        <br />
-        {error.name && <span>{error.name}</span>}
-        <br />
-        <label htmlFor="">Años de vida:</label>
-        <input
-          type="text"
-          placeholder="10 - 20"
-          name="life_span"
-          value={dog.life_span}
-          onChange={handlerDog}
-        />
-        <br />
-        {error.life_span && <span>{error.life_span}</span>}
+      <h1>Añadí una raza!</h1>
 
-        <br />
-        <label htmlFor="">Altura Max:</label>
-        <input
-          type="text"
-          placeholder="30"
-          name="height_max"
-          onChange={handlerPreDog}
-          value={preDog.height_max}
-        />
-        <br />
-        {error.height_max && <span>{error.height_max}</span>}
-        <br />
-        <label htmlFor="">Altura Min:</label>
-        <input
-          type="text"
-          placeholder="10"
-          name="height_min"
-          onChange={handlerPreDog}
-          value={preDog.height_min}
-        />
-        <br />
-        {error.height_min && <span>{error.height_min}</span>}
-        <br />
-        <label htmlFor="">Peso Max:</label>
-        <input
-          type="text"
-          placeholder="6"
-          name="weight_max"
-          value={preDog.weight_max}
-          onChange={handlerPreDog}
-        />
-        <br />
-        {error.weight_max && <span>{error.weight_max}</span>}
-        <br />
+      <form onSubmit={handlerSubmit} className={style.form}>
+        <div className={style.divForm}>
+          <label htmlFor="">Nombre</label>
+          <input
+            autoComplete="off"
+            type="text"
+            placeholder="Nombre"
+            name="name"
+            value={dog.name}
+            onChange={handlerDog}
+          />
 
-        <label htmlFor="">Peso Min:</label>
-        <input
-          type="text"
-          placeholder="2"
-          name="weight_min"
-          value={preDog.weight_min}
-          onChange={handlerPreDog}
-        />
-        <br />
+          {error.name && <span>{error.name}</span>}
 
-        {error.weight_min && <span>{error.weight_min}</span>}
-        <br />
-        <label htmlFor="">URL de la Imagen:</label>
-        <input
-          type="text"
-          placeholder="img.com"
-          name="image"
-          value={dog.image}
-          onChange={handlerDog}
-        />
-        <br />
+          <label htmlFor="">Años de vida</label>
+          <input
+            autoComplete="off"
+            type="text"
+            placeholder="05 - 10"
+            name="life_span"
+            value={dog.life_span}
+            onChange={handlerDog}
+          />
 
-        {error.image && <span>{error.image}</span>}
-        <br />
-        <label htmlFor="">Seleccione temperamentos</label>
-        <br />
-        <select onChange={handlerTemps}>
-          <option value="" selected>
-            Temperamentos
-          </option>
-          {temps.map((temp) => {
-            return (
-              <option value={temp.name} key={temp.id}>
-                {temp.name}
-              </option>
-            );
-          })}
-        </select>
-        <br />
-        {selectedTemps.length &&
-          selectedTemps.map((temp, index) => (
-            // {temp&& }
-            <div key={index}>
-              <span>{temp}</span>
-              <button type="button" id={temp} onClick={handlerDelete}>
-                x
-              </button>
-            </div>
-          ))}
-        {error.temps && <span>{error.temps}</span>}
-        <br />
+          {error.life_span && <span>{error.life_span}</span>}
 
-        <br />
-        <button disabled={disbleSend()} type="submit">
-          Crear
-        </button>
+          <label htmlFor="">Altura Max</label>
+          <input
+            autoComplete="off"
+            type="text"
+            placeholder="30"
+            name="height_max"
+            onChange={handlerPreDog}
+            value={preDog.height_max}
+          />
+
+          {error.height_max && <span>{error.height_max}</span>}
+
+          <label htmlFor="">Altura Min</label>
+          <input
+            autoComplete="off"
+            type="text"
+            placeholder="10"
+            name="height_min"
+            onChange={handlerPreDog}
+            value={preDog.height_min}
+          />
+
+          {error.height_min && <span>{error.height_min}</span>}
+
+          <label htmlFor="">Peso Max</label>
+          <input
+            autoComplete="off"
+            type="text"
+            placeholder="6"
+            name="weight_max"
+            value={preDog.weight_max}
+            onChange={handlerPreDog}
+          />
+
+          {error.weight_max && <span>{error.weight_max}</span>}
+
+          <label htmlFor="">Peso Min</label>
+          <input
+            autoComplete="off"
+            type="text"
+            placeholder="2"
+            name="weight_min"
+            value={preDog.weight_min}
+            onChange={handlerPreDog}
+          />
+
+          {error.weight_min && <span>{error.weight_min}</span>}
+
+          <label htmlFor="">URL de la Imagen</label>
+          <input
+            autoComplete="off"
+            type="text"
+            placeholder="img.com"
+            name="image"
+            value={dog.image}
+            onChange={handlerDog}
+          />
+
+          {error.image && <span>{error.image}</span>}
+
+          <label htmlFor="">Seleccione temperamentos</label>
+
+          <select onChange={handlerTemps}>
+            <option value="" selected disabled>
+              Temperamentos
+            </option>
+            {temps.map((temp) => {
+              return (
+                <option value={temp.name} key={temp.id}>
+                  {temp.name}
+                </option>
+              );
+            })}
+          </select>
+
+          <div className={style.tempsContainer}>
+            {selectedTemps &&
+              selectedTemps.map((temp, index) => (
+                // {temp&& }
+                <div key={index} className={style.temp}>
+                  {/* <span className={style.sp}>{temp}</span> */}
+                  <button type="button" id={temp} onClick={handlerDelete}>
+                    {temp}
+                  </button>
+                </div>
+              ))}
+          </div>
+          {error.temps && <span>{error.temps}</span>}
+
+          <div className={style.submit}>
+            <button disabled={disbleSend()} type="submit">
+              Crear
+            </button>
+          </div>
+        </div>
       </form>
     </div>
   );
