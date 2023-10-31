@@ -5,7 +5,7 @@ const LandingPage = () => {
     <div className={style.landing}>
       {/* <h1>Bienvenidos al WebSite de Dogs!</h1> */}
       <div className={style.land}>
-        <h1>WELCOME TO DOGS PAGE!</h1>
+        <h1>WELCOME TO DOGGYKLOPEDIA!</h1>
         <div className={style.dog}>
           <img className={style.imgd} src="../../../public/dog1.png" alt="" />
 
