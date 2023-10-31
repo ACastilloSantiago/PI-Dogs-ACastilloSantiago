@@ -20,9 +20,10 @@
 const server = require("./src/app.js");
 const { conn } = require("./src/db.js");
 const getTemperaments = require("./src/controllers/getTemperaments.js");
+const port = process.env.PORT || 3001;
 conn.sync({ force: true }).then(() => {
-  server.listen(3001, () => {
+  server.listen(port, () => {
     getTemperaments();
-    console.log("%s listening at 3001"); // eslint-disable-line no-console
+    console.log(`%s listening at ${port}`); // eslint-disable-line no-console
   });
 });
